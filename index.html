@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moon's Sandwich Recipe</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F8F6F0;
+  --paper: #FDFCF8;
+  --ink: #1C1C1C;
+  --red: #C0392B;
+  --blue: #2255AA;
+  --line: #BDD4E8;
+  --line2: #D8D0C0;
+  --gray: #888078;
+  --hand: 'Nanum Pen Script', cursive;
+  --sans: 'Noto Sans KR', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--hand);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+/* paper grain */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
+}
+
+.page { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 0 1.2rem 6rem; }
+
+/* ── RULED LINES (notebook background) ── */
+.ruled {
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 31px,
+      var(--line) 31px,
+      var(--line) 32.5px
+    );
+  background-size: 100% 32px;
+}
+
+/* ── HEADER ── */
+.header {
+  padding: 2.8rem 0 1.5rem;
+  position: relative;
+  border-bottom: 2.5px solid var(--ink);
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+/* red margin line */
+.header::before {
+  content: '';
+  position: absolute;
+  left: 52px; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--red);
+  opacity: 0.7;
+}
+
+.header-text { padding-left: 68px; }
+.site-name {
+  font-family: var(--hand);
+  font-size: clamp(2.2rem, 7vw, 4.2rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.site-name .red { color: var(--red); }
+.site-sub {
+  font-size: 1.35rem;
+  color: var(--gray);
+  margin-top: 0.3rem;
+  font-family: var(--hand);
+  font-weight: 600;
+}
+
+/* Header sandwich illustration - triangle sandwich, 1-color sketch */
+.header-illust { flex-shrink: 0; width: 120px; cursor: pointer; }
+.header-illust .illust-seed,
+.header-illust .illust-tomato { transition: stroke 0.25s ease; }
+.header-illust:hover .illust-seed,
+.header-illust:hover .illust-tomato { stroke: var(--red); }
+
+/* ── QUESTION BLOCK ── */
+.q-block {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 2px;
+  padding: 0 0 1.4rem;
+  margin-bottom: 2rem;
+  position: relative;
+  /* ruled lines inside */
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 31px,
+      #D8EAF5 31px,
+      #D8EAF5 32px
+    );
+  background-size: 100% 32px;
+}
+/* red margin line */
+.q-block::before {
+  content: '';
+  position: absolute;
+  left: 48px; top: 0; bottom: 0;
+  width: 1.5px;
+  background: var(--red);
+  opacity: 0.6;
+  pointer-events: none;
+}
+.q-header {
+  padding: 1.2rem 1.4rem 0.8rem 64px;
+  border-bottom: 1.5px dashed var(--line2);
+  margin-bottom: 1rem;
+}
+.q-title {
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 1.26;
+  font-family: var(--hand);
+}
+.q-title .red { color: var(--red); }
+.q-sub { font-size: 1.15rem; color: var(--gray); margin-top: 0.2rem; font-weight: 600; }
+
+.q-body { padding: 0 1.4rem 0 64px; }
+
+/* Category grid */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.9rem;
+  margin-bottom: 1.2rem;
+}
+@media(max-width:520px){ .cat-grid { grid-template-columns: repeat(2,1fr); } }
+
+.cat-block { position: relative; }
+.cat-label {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--red);
+  margin-bottom: 0.45rem;
+  font-family: var(--hand);
+  border-bottom: 1.5px solid var(--red);
+  padding-bottom: 0.2rem;
+  display: inline-block;
+}
+.cat-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.cat-chip {
+  padding: 3px 13px;
+  border: 1.5px solid var(--ink);
+  border-radius: 20px;
+  background: transparent;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--hand);
+  transition: all 0.12s;
+  line-height: 1.5;
+}
+.cat-chip:hover { background: var(--ink); color: white; }
+.cat-chip.on { background: var(--ink); color: white; }
+
+/* Taste row */
+.taste-row {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+  padding-top: 0.9rem;
+  border-top: 1.5px dashed var(--line2);
+  margin-top: 0.4rem;
+}
+.taste-lbl {
+  font-size: 1.05rem; color: var(--gray); white-space: nowrap; font-family: var(--hand); font-weight: 600;
+}
+.taste-chip {
+  padding: 3px 14px;
+  border: 1.5px solid var(--ink);
+  border-radius: 20px;
+  background: transparent;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--hand);
+  transition: all 0.12s;
+}
+.taste-chip:hover { background: var(--ink); color: white; }
+.taste-chip.on { background: var(--ink); color: white; }
+
+/* ── RECOMMENDATION ── */
+.rec-strip { display: none; margin-bottom: 2.2rem; }
+.rec-strip.visible { display: block; }
+.rec-label {
+  font-family: var(--hand);
+  font-size: 0.85rem;
+  color: var(--red);
+  font-weight: 700;
+  margin-bottom: 0.9rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.rec-label::after { content:''; flex:1; height:1.5px; background:var(--red); opacity:0.35; }
+.rec-posters {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 1rem;
+}
+@media(max-width:520px){ .rec-posters { grid-template-columns: repeat(2,1fr); } }
+
+/* ── NOTE CARD (recipe card) ── */
+.note-card {
+  /* 종이 질감: 미색 + SVG noise grain */
+  background-color: #FDFBF4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23p)' opacity='0.045'/%3E%3C/svg%3E");
+  border-radius: 6px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  overflow: visible;
+  box-shadow:
+    2px 4px 14px rgba(160, 100, 40, 0.11),
+    0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.note-card:hover {
+  transform: translate(-2px, -5px);
+  box-shadow:
+    5px 12px 28px rgba(160, 100, 40, 0.19),
+    0 2px 6px rgba(0, 0, 0, 0.07);
+}
+/* 크레파스 테두리: SVG wobble filter로 삐뚤빼뚤한 선 */
+.note-card::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border: 2.5px solid var(--red);
+  border-radius: 10px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+  filter: url('#crayon-wobble');
+}
+.note-card:hover::after { opacity: 1; }
+
+.nc-inner { padding: 1.2rem 1.1rem 1rem; }
+.nc-bread {
+  font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gray); margin-bottom: 0.5rem; font-family: var(--sans); font-weight: 600;
+}
+/* 형광펜 강조: 좌→우 sweep */
+.nc-name {
+  font-size: clamp(1.25rem, 2.8vw, 1.55rem); font-weight: 900;
+  color: var(--ink); line-height: 1.2; margin-bottom: 0.5rem;
+  font-family: var(--hand);
+  background-image: linear-gradient(transparent 52%, rgba(255, 234, 0, 0.68) 52%);
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  background-position: left center;
+  transition: background-size 0.38s ease;
+}
+.note-card:hover .nc-name { background-size: 100% 100%; }
+.nc-tagline {
+  font-size: 0.88rem; color: var(--red); font-style: italic;
+  line-height: 1.4; margin-bottom: 0.7rem; font-family: var(--sans); font-weight: 400;
+}
+.nc-desc {
+  font-size: 0.9rem; color: var(--gray); line-height: 1.45; font-family: var(--sans);
+  font-weight: 400; margin-bottom: 0.6rem;
+}
+.nc-tags {
+  display: flex; flex-wrap: wrap; gap: 4px;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--line2);
+}
+.nc-tag {
+  font-size: 0.8rem; padding: 2px 9px;
+  border: 1px solid var(--ink); border-radius: 1px;
+  color: var(--ink); font-family: var(--sans); font-weight: 500;
+}
+.nc-tag.r { border-color: var(--red); color: var(--red); }
+
+/* ── ALL RECIPES GRID ── */
+.sec-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 1.1rem;
+}
+.sec-title {
+  font-family: var(--hand);
+  font-size: clamp(1.3rem, 4vw, 1.9rem);
+  font-weight: 700; color: var(--ink);
+}
+.sec-count { font-size: 0.85rem; color: var(--gray); font-family: var(--hand); }
+
+.all-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.1rem;
+}
+
+/* ── DETAIL MODAL ── */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(28,28,28,0.5);
+  z-index: 200; display: none;
+  align-items: center; justify-content: center; padding: 1rem;
+}
+.overlay.open { display: flex; }
+.modal {
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 2px;
+  max-width: 560px; width: 100%;
+  max-height: 90vh; overflow-y: auto;
+  position: relative;
+  /* ruled lines */
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 31px,
+      #D8EAF5 31px,
+      #D8EAF5 32px
+    );
+  background-size: 100% 32px;
+}
+.modal::before {
+  content: '';
+  position: absolute; left: 52px; top: 0; bottom: 0;
+  width: 1.5px; background: var(--red); opacity: 0.55; pointer-events: none; z-index: 1;
+}
+.modal-head {
+  padding: 1.8rem 1.8rem 1.3rem 68px;
+  border-bottom: 2px solid var(--ink);
+  position: relative;
+}
+.modal-bread { font-size: 0.95rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); margin-bottom: 0.35rem; font-family: var(--hand); font-weight: 600; }
+.modal-name { font-family: var(--hand); font-size: clamp(1.9rem,5vw,2.8rem); font-weight: 900; color: var(--ink); line-height: 1.0; margin-bottom: 0.4rem; }
+.modal-desc { font-size: 1.1rem; color: var(--gray); font-style: italic; line-height: 1.44; font-family: var(--hand); font-weight: 600; }
+.modal-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: var(--ink); color: white; border: none;
+  width: 26px; height: 26px; border-radius: 1px; cursor: pointer;
+  font-size: 0.85rem; font-family: var(--hand);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-body { padding: 1.3rem 1.8rem 1.3rem 68px; }
+.m-section { margin-bottom: 1.4rem; }
+.m-label {
+  font-size: 0.92rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--red); font-weight: 900; margin-bottom: 0.55rem;
+  border-bottom: 1.5px solid var(--red); padding-bottom: 0.2rem;
+  display: inline-block; font-family: var(--hand);
+}
+.m-ing { list-style: none; }
+.m-ing li {
+  padding: 0.35rem 0; font-size: 1rem; font-family: var(--sans); font-weight: 400;
+  border-bottom: 1px dashed rgba(28,28,28,0.15);
+  display: flex; align-items: center; gap: 0.45rem;
+  line-height: 1.5;
+}
+.m-ing li::before { content: '—'; color: var(--red); font-size: 1rem; }
+.m-steps { list-style: none; counter-reset: st; }
+.m-steps li {
+  counter-increment: st;
+  padding: 0.55rem 0 0.55rem 2rem;
+  font-size: 0.97rem; font-family: var(--sans); font-weight: 400;
+  border-bottom: 1px dashed rgba(28,28,28,0.15);
+  line-height: 1.65; position: relative;
+}
+.m-steps li::before {
+  content: counter(st) '.';
+  position: absolute; left: 0; top: 0.55rem;
+  color: var(--red); font-weight: 700; font-size: 1rem; font-family: var(--sans);
+}
+.tip-box {
+  border: 1.5px dashed var(--ink); border-radius: 1px;
+  padding: 0.8rem 1rem;
+  font-size: 0.95rem; font-family: var(--sans); font-style: italic; font-weight: 400;
+  color: var(--ink); line-height: 1.53;
+  background: #ffffff;
+}
+.modal-foot {
+  padding: 0.9rem 1.8rem 1.4rem 68px;
+  border-top: 1.5px dashed rgba(28,28,28,0.2);
+  display: flex; gap: 0.6rem; flex-wrap: wrap;
+}
+.share-box {
+  margin: 0 1.8rem 1rem 68px; padding: 0.55rem 0.8rem;
+  border: 1.5px dashed var(--gray);
+  font-size: 0.75rem; color: var(--gray); font-family: monospace;
+  word-break: break-all; display: none; border-radius: 1px;
+}
+.share-box.show { display: block; }
+
+/* ── MOON'S COMMENT BOX ── */
+.mc-box {
+  margin: 0 1.8rem 1.2rem 68px;
+  padding: 1rem 1.1rem;
+  background: #F9F8F6;
+  border: 1px solid rgba(28,28,28,0.1);
+  border-radius: 8px;
+}
+.mc-title {
+  font-family: var(--hand);
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.mc-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(28,28,28,0.1);
+}
+.mc-items { display: flex; flex-direction: column; gap: 0.5rem; }
+.mc-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  background: white;
+  border: 1px solid rgba(28,28,28,0.07);
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color 0.18s ease, transform 0.18s ease;
+}
+.mc-item:hover {
+  border-color: var(--red);
+  transform: translateX(3px);
+}
+.mc-text {
+  flex: 1;
+  font-size: 0.87rem;
+  font-family: var(--sans);
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.mc-text strong {
+  font-weight: 700;
+  color: var(--red);
+}
+.mc-arrow {
+  flex-shrink: 0;
+  min-width: 24px; height: 24px;
+  padding: 0 6px;
+  border: 1px solid rgba(28,28,28,0.15);
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem;
+  color: var(--gray);
+  transition: background 0.18s ease, border-color 0.18s ease,
+              color 0.18s ease, padding 0.18s ease, min-width 0.18s ease;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.mc-arrow .icon-cart { display: inline-flex; }
+.mc-arrow .icon-label { display: none; font-size: 0.75rem; font-family: var(--sans); font-weight: 600; }
+.mc-item:hover .mc-arrow {
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+  min-width: 56px;
+  padding: 0 10px;
+}
+.mc-item:hover .mc-arrow .icon-cart  { display: none; }
+.mc-item:hover .mc-arrow .icon-label { display: inline; }
+
+/* ── BUTTONS ── */
+.btn {
+  padding: 0.48rem 1.1rem;
+  border: 2px solid var(--ink); border-radius: 1px;
+  font-family: var(--hand); font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; transition: all 0.12s;
+}
+.btn-dark { background: var(--ink); color: white; }
+.btn-dark:hover { background: #333; }
+.btn-ghost { background: transparent; color: var(--ink); }
+.btn-ghost:hover { background: var(--bg); }
+
+/* ── SUBMIT POPUP ── */
+.sub-overlay {
+  position: fixed; inset: 0;
+  background: rgba(28,28,28,0.55);
+  z-index: 300; display: none;
+  align-items: center; justify-content: center; padding: 1rem;
+}
+.sub-overlay.open { display: flex; }
+.sub-modal {
+  background: var(--paper); border: 2.5px solid var(--ink); border-radius: 2px;
+  max-width: 560px; width: 100%; max-height: 92vh; overflow-y: auto;
+  position: relative;
+  background-image: repeating-linear-gradient(to bottom, transparent 0px, transparent 31px, #D8EAF5 31px, #D8EAF5 32px);
+  background-size: 100% 32px;
+}
+.sub-modal::before {
+  content: '';
+  position: absolute; left: 52px; top: 0; bottom: 0;
+  width: 1.5px; background: var(--red); opacity: 0.55; pointer-events: none; z-index: 1;
+}
+.sub-head {
+  padding: 1.8rem 1.8rem 1.2rem 68px;
+  border-bottom: 2px solid var(--ink); position: relative;
+}
+.sub-title { font-family: var(--hand); font-size: clamp(1.4rem,4vw,2rem); font-weight: 700; color: var(--ink); margin-bottom: 0.25rem; }
+.sub-subtitle { font-size: 0.88rem; color: var(--gray); font-style: italic; font-family: var(--hand); }
+.sub-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: var(--ink); color: white; border: none;
+  width: 26px; height: 26px; border-radius: 1px; cursor: pointer;
+  font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
+}
+.sub-body { padding: 1.3rem 1.8rem 1rem 68px; }
+.fg { margin-bottom: 1.1rem; }
+.fg-label {
+  display: block; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 0.4rem;
+  border-bottom: 1.5px solid var(--red); padding-bottom: 0.2rem;
+  display: inline-block; font-family: var(--hand);
+}
+.fg-input, .fg-textarea {
+  display: block; width: 100%; padding: 0.55rem 0.8rem;
+  border: 2px solid var(--ink); border-radius: 1px;
+  font-family: var(--hand); font-size: 0.95rem;
+  color: var(--ink); background: transparent; outline: none;
+  transition: border-color 0.12s;
+}
+.fg-input:focus, .fg-textarea:focus { border-color: var(--red); }
+.fg-textarea { resize: vertical; min-height: 80px; }
+.fg-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 0.4rem; }
+.fg-chip {
+  padding: 2px 10px; border: 1.5px solid var(--ink); border-radius: 20px;
+  background: transparent; font-size: 0.85rem; color: var(--ink);
+  cursor: pointer; font-family: var(--hand); transition: all 0.1s;
+}
+.fg-chip:hover { background: var(--ink); color: white; }
+.fg-chip.on { background: var(--ink); color: white; }
+.fg-add { display: flex; gap: 6px; margin-top: 5px; }
+.fg-add-input {
+  flex: 1; padding: 4px 9px;
+  border: 1.5px solid var(--ink); border-radius: 1px;
+  font-family: var(--hand); font-size: 0.85rem; color: var(--ink);
+  background: transparent; outline: none;
+}
+.fg-add-input:focus { border-color: var(--red); }
+.fg-add-btn {
+  padding: 4px 11px; border: 1.5px solid var(--ink); border-radius: 1px;
+  background: transparent; font-family: var(--hand); font-size: 0.82rem;
+  color: var(--ink); cursor: pointer;
+}
+.fg-add-btn:hover { background: var(--ink); color: white; }
+.sub-foot {
+  padding: 0.9rem 1.8rem 1.4rem 68px;
+  border-top: 1.5px dashed rgba(28,28,28,0.2);
+  display: flex; gap: 0.6rem; justify-content: flex-end;
+}
+
+/* ── BOTTOM BAR ── */
+.bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--ink); padding: 0.75rem 1.5rem;
+  display: flex; justify-content: center; gap: 1rem; z-index: 100;
+}
+.bb-btn {
+  padding: 0.45rem 1.3rem;
+  border: 2px solid rgba(255,255,255,0.35); border-radius: 1px;
+  background: transparent; color: rgba(255,255,255,0.75);
+  font-family: var(--hand); font-size: 0.9rem; font-weight: 700;
+  cursor: pointer; transition: all 0.12s;
+}
+.bb-btn:hover { border-color: white; color: white; }
+.bb-btn.red-btn { background: var(--red); color: white; border-color: var(--red); }
+.bb-btn.red-btn:hover { background: #a0302a; border-color: #a0302a; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 4.5rem; left: 50%;
+  transform: translateX(-50%) translateY(50px);
+  background: var(--ink); color: white;
+  padding: 0.55rem 1.3rem; border-radius: 1px;
+  font-size: 0.88rem; font-family: var(--hand);
+  z-index: 500; transition: transform 0.22s; white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── SHARE POPUP ── */
+.share-overlay {
+  position: fixed; inset: 0;
+  background: rgba(28,28,28,0.52);
+  z-index: 300; display: none;
+  align-items: center; justify-content: center; padding: 1rem;
+}
+.share-overlay.open { display: flex; }
+.share-modal {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  max-width: 420px; width: 100%;
+  position: relative;
+  box-shadow: 4px 8px 32px rgba(0,0,0,0.18);
+}
+.share-modal-head {
+  padding: 1.6rem 1.6rem 1.1rem;
+  border-bottom: 1.5px solid rgba(28,28,28,0.1);
+  position: relative;
+}
+.share-modal-head .sm-title {
+  font-family: var(--hand);
+  font-size: clamp(1.3rem,4vw,1.8rem);
+  font-weight: 700;
+  color: var(--ink);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.share-modal-head .sm-sub {
+  font-size: 0.85rem; color: var(--gray);
+  font-family: var(--sans); margin-top: 0.25rem;
+}
+.share-modal-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: var(--ink); color: white; border: none;
+  width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
+  font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
+}
+.share-url-body { padding: 1.4rem 1.6rem 1.6rem; }
+.share-url-box {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: white;
+  border: 1.5px solid rgba(28,28,28,0.18);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+}
+.share-url-text {
+  flex: 1; font-family: var(--sans); font-size: 0.83rem;
+  color: var(--gray); overflow: hidden; white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.share-copy-btn {
+  flex-shrink: 0;
+  background: var(--ink); color: white; border: none;
+  border-radius: 6px; padding: 0.38rem 0.85rem;
+  font-family: var(--sans); font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; transition: background 0.15s;
+}
+.share-copy-btn:hover { background: var(--red); }
+.share-copy-btn.copied { background: #4caf50; }
+
+/* ── THANKS POPUP ── */
+.thanks-overlay {
+  position: fixed; inset: 0;
+  background: rgba(28,28,28,0.45);
+  z-index: 400; display: none;
+  align-items: center; justify-content: center;
+}
+.thanks-overlay.open { display: flex; }
+.thanks-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.4rem 2.8rem;
+  text-align: center;
+  max-width: 320px; width: 90%;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.16);
+  animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.thanks-emoji { font-size: 2.8rem; margin-bottom: 0.8rem; }
+.thanks-msg {
+  font-family: var(--hand);
+  font-size: clamp(1.1rem,3vw,1.35rem);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.5;
+  margin-bottom: 1.3rem;
+}
+.thanks-msg span { color: var(--red); }
+.thanks-close {
+  background: var(--ink); color: white;
+  border: none; border-radius: 8px;
+  padding: 0.5rem 1.6rem;
+  font-family: var(--hand); font-size: 0.95rem;
+  cursor: pointer; transition: background 0.15s;
+}
+.thanks-close:hover { background: #333; }
+
+.no-result {
+  grid-column: 1/-1; text-align: center; padding: 2.5rem;
+  color: var(--gray); font-style: italic; font-family: var(--hand); font-size: 1rem;
+}
+
+/* ── LIKE BUTTON on cards ── */
+.nc-inner { padding-bottom: 2.4rem; }
+.nc-like {
+  position: absolute; bottom: 0.7rem; right: 0.8rem;
+  display: flex; align-items: center; gap: 4px;
+  background: white; border: 1.5px solid rgba(28,28,28,0.12);
+  border-radius: 20px; padding: 3px 9px 3px 7px;
+  cursor: pointer; font-family: var(--sans); font-size: 0.75rem; font-weight: 600;
+  color: var(--gray); transition: border-color 0.15s, color 0.15s, background 0.15s;
+  z-index: 2; user-select: none; line-height: 1;
+}
+.nc-like:hover { border-color: var(--red); color: var(--red); }
+.nc-like.liked { border-color: var(--red); color: var(--red); background: #fff5f5; }
+.nc-like svg { transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1); flex-shrink: 0; }
+.nc-like.pop svg { transform: scale(1.6); }
+.nc-like-count { min-width: 12px; text-align: center; }
+
+/* ── TOP 3 RANKING ── */
+.top3-wrap { margin-bottom: 2.2rem; }
+.top3-label {
+  font-family: var(--hand); font-size: 0.88rem;
+  color: var(--red); font-weight: 700;
+  margin-bottom: 0.9rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.top3-label::after { content:''; flex:1; height:1.5px; background:var(--red); opacity:0.35; }
+.top3-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+}
+@media(max-width:520px){ .top3-grid { grid-template-columns: 1fr; } }
+.top3-card {
+  background: var(--paper); border: 2px solid var(--ink);
+  border-radius: 4px; padding: 0.9rem 1rem 0.8rem;
+  cursor: pointer; position: relative;
+  transition: transform 0.18s, box-shadow 0.18s;
+  display: flex; flex-direction: column; gap: 0.2rem;
+  overflow: hidden;
+}
+.top3-card:hover { transform: translateY(-3px); box-shadow: 3px 8px 20px rgba(0,0,0,0.1); }
+.top3-rank {
+  font-family: var(--hand); font-size: 1.5rem; font-weight: 900; line-height: 1;
+  color: var(--gray);
+}
+.top3-rank.gold   { color: #B8860B; }
+.top3-rank.silver { color: #708090; }
+.top3-rank.bronze { color: #8B4513; }
+.top3-name { font-family: var(--hand); font-size: 1rem; font-weight: 700; color: var(--ink); line-height: 1.2; }
+.top3-bread { font-family: var(--sans); font-size: 0.7rem; color: var(--gray); letter-spacing: 0.06em; text-transform: uppercase; }
+.top3-likes {
+  font-family: var(--sans); font-size: 0.72rem; color: var(--red);
+  display: flex; align-items: center; gap: 3px; margin-top: 0.4rem;
+}
+.top3-empty {
+  font-family: var(--hand); font-size: 0.9rem; color: var(--gray);
+  text-align: center; padding: 1rem 0;
+}
+
+/* ── WISHLIST PANEL ── */
+.wishlist-overlay {
+  position: fixed; inset: 0;
+  background: rgba(28,28,28,0.45);
+  z-index: 350; display: none;
+  justify-content: flex-end;
+}
+.wishlist-overlay.open { display: flex; }
+.wishlist-panel {
+  background: var(--paper); width: min(340px, 90vw);
+  height: 100%; overflow-y: auto;
+  border-left: 2.5px solid var(--ink);
+  transform: translateX(100%);
+  transition: transform 0.28s ease;
+  display: flex; flex-direction: column;
+}
+.wishlist-overlay.open .wishlist-panel { transform: translateX(0); }
+.wishlist-head {
+  padding: 1.5rem 1.3rem 1rem;
+  border-bottom: 2px solid var(--ink); position: relative; flex-shrink: 0;
+}
+.wishlist-title {
+  font-family: var(--hand); font-size: 1.5rem; font-weight: 700; color: var(--ink);
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.wishlist-sub { font-family: var(--sans); font-size: 0.78rem; color: var(--gray); margin-top: 0.2rem; }
+.wishlist-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: var(--ink); color: white; border: none;
+  width: 26px; height: 26px; border-radius: 1px; cursor: pointer;
+  font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
+}
+.wishlist-body { flex: 1; padding: 1rem 1.2rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.wishlist-item {
+  background: white; border: 1.5px solid rgba(28,28,28,0.1);
+  border-radius: 6px; padding: 0.75rem 0.9rem;
+  cursor: pointer; transition: border-color 0.15s, transform 0.15s;
+}
+.wishlist-item:hover { border-color: var(--red); transform: translateX(3px); }
+.wishlist-item-name { font-family: var(--hand); font-size: 1rem; font-weight: 700; color: var(--ink); }
+.wishlist-item-bread { font-family: var(--sans); font-size: 0.72rem; color: var(--gray); margin-top: 2px; }
+.wishlist-empty { text-align: center; padding: 3rem 1rem; font-family: var(--hand); color: var(--gray); font-size: 0.95rem; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ── HEADER ── -->
+<div class="header">
+  <div class="header-text">
+    <div class="site-name">Moon's<br><span class="red">Sandwich</span><br>Recipe</div>
+    <div class="site-sub">재료로 찾는 나만의 조합 ✏</div>
+  </div>
+  <!-- Triangle sandwich, 1-color sketch -->
+  <svg class="header-illust" viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#1C1C1C" stroke-linecap="round" stroke-linejoin="round">
+    <!-- person holding sandwich (Ryan Gillett style) -->
+    <!-- arms -->
+    <path d="M22 72 Q14 65 18 55 Q22 46 32 50" stroke-width="2.8"/>
+    <path d="M98 72 Q106 65 102 55 Q98 46 88 50" stroke-width="2.8"/>
+    <!-- hands -->
+    <ellipse cx="30" cy="53" rx="7" ry="5" stroke-width="2.2" transform="rotate(-20 30 53)"/>
+    <ellipse cx="90" cy="53" rx="7" ry="5" stroke-width="2.2" transform="rotate(20 90 53)"/>
+    <!-- triangle sandwich body -->
+    <path d="M32 82 L60 22 L88 82 Z" stroke-width="2.6"/>
+    <!-- layers inside triangle -->
+    <line x1="36" y1="74" x2="84" y2="74" stroke-width="2"/>
+    <line class="illust-tomato" x1="40" y1="66" x2="80" y2="66" stroke-width="2"/>
+    <line x1="44" y1="58" x2="76" y2="58" stroke-width="2"/>
+    <!-- wavy lettuce line -->
+    <path d="M38 70 Q44 66 50 70 Q56 74 62 70 Q68 66 74 70 Q80 74 82 71" stroke-width="2.2"/>
+    <!-- sesame seeds on top -->
+    <ellipse class="illust-seed" cx="54" cy="38" rx="2.5" ry="1.2" stroke-width="1.5" transform="rotate(-15 54 38)"/>
+    <ellipse class="illust-seed" cx="62" cy="33" rx="2.5" ry="1.2" stroke-width="1.5" transform="rotate(10 62 33)"/>
+    <ellipse class="illust-seed" cx="68" cy="40" rx="2" ry="1" stroke-width="1.5" transform="rotate(-5 68 40)"/>
+    <!-- body / torso suggestion -->
+    <path d="M38 82 Q30 88 28 100" stroke-width="2.2"/>
+    <path d="M82 82 Q90 88 92 100" stroke-width="2.2"/>
+    <!-- head -->
+    <circle cx="60" cy="108" r="14" stroke-width="2.4"/>
+    <!-- face -->
+    <path d="M54 112 Q60 117 66 112" stroke-width="1.8"/>
+    <circle cx="55" cy="107" r="1.5" fill="#1C1C1C" stroke="none"/>
+    <circle cx="65" cy="107" r="1.5" fill="#1C1C1C" stroke="none"/>
+    <!-- hair -->
+    <path d="M48 103 Q52 94 60 94 Q68 94 72 103" stroke-width="2.2"/>
+    <path d="M48 103 Q46 98 50 96" stroke-width="1.8"/>
+  </svg>
+</div>
+
+<!-- ── TOP 3 RANKING ── -->
+<div class="top3-wrap">
+  <div class="top3-label">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--red)" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    요즘 많이 찾는 레시피 TOP 3
+  </div>
+  <div class="top3-grid" id="top3Grid">
+    <div class="top3-empty">아직 좋아요가 없어요. 마음에 드는 레시피에 하트를 눌러보세요 ♡</div>
+  </div>
+</div>
+
+<!-- ── QUESTION SECTION ── -->
+<div class="q-block">
+  <div class="q-header">
+    <div class="q-title">지금 어떤 샌드위치를 만들어볼까요?<br><span class="red">재료</span>와 <span class="red">맛</span>을 골라주세요</div>
+    <div class="q-sub">선택하면 맞는 레시피를 바로 추천해드려요</div>
+  </div>
+  <div class="q-body">
+    <div class="cat-grid" id="catGrid"></div>
+    <div class="taste-row">
+      <span class="taste-lbl">맛 ·</span>
+      <span class="taste-chip" data-t="고소한" onclick="toggleTaste(this)">고소한</span>
+      <span class="taste-chip" data-t="상큼한" onclick="toggleTaste(this)">상큼한</span>
+      <span class="taste-chip" data-t="매콤한" onclick="toggleTaste(this)">매콤한</span>
+      <span class="taste-chip" data-t="담백한" onclick="toggleTaste(this)">담백한</span>
+      <span class="taste-chip" data-t="든든한" onclick="toggleTaste(this)">든든한</span>
+      <span class="taste-chip" data-t="가벼운" onclick="toggleTaste(this)">가벼운</span>
+      <span class="taste-chip" data-t="달콤한" onclick="toggleTaste(this)">달콤한</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── RECOMMENDATION ── -->
+<div class="rec-strip" id="recStrip">
+  <div class="rec-label" id="recLabel">이런 레시피 어떠세요?</div>
+  <div class="rec-posters" id="recPosters"></div>
+</div>
+
+<!-- ── ALL RECIPES ── -->
+<div class="sec-header">
+  <div class="sec-title" id="secTitle">전체 레시피</div>
+  <div class="sec-count" id="secCount"></div>
+</div>
+<div class="all-grid" id="allGrid"></div>
+
+</div><!-- /page -->
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="dOverlay" onclick="closeDOverlay(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-bread" id="dBread"></div>
+      <div class="modal-name" id="dName"></div>
+      <div class="modal-desc" id="dDesc"></div>
+      <button class="modal-close" onclick="closeDBtn()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="m-section">
+        <div class="m-label">재료</div>
+        <ul class="m-ing" id="dIng"></ul>
+      </div>
+      <div class="m-section">
+        <div class="m-label">만드는 방법</div>
+        <ol class="m-steps" id="dSteps"></ol>
+      </div>
+      <div class="m-section" id="dTipWrap">
+        <div class="m-label">레시피 킥!</div>
+        <div class="tip-box" id="dTip"></div>
+      </div>
+    </div>
+    <!-- Moon's Comment Box -->
+    <div class="mc-box" id="moonCommentBox" style="display:none">
+      <div class="mc-title">Moon's Pick</div>
+      <div class="mc-items" id="mcItems"></div>
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn btn-dark" onclick="shareRecipe()">링크 복사</button>
+      <button class="btn btn-ghost" onclick="closeDBtn()">닫기</button>
+    </div>
+    <div class="share-box" id="shareBox"></div>
+  </div>
+</div>
+
+<!-- SUBMIT POPUP -->
+<div class="sub-overlay" id="subOverlay" onclick="closeSubOverlay(event)">
+  <div class="sub-modal">
+    <div class="sub-head">
+      <div class="sub-title">나의 꿀조합 제보하기 ✏</div>
+      <div class="sub-subtitle">직접 만든 레시피를 공유해주세요</div>
+      <button class="sub-close" onclick="closeSubBtn()">✕</button>
+    </div>
+    <div class="sub-body">
+      <div class="fg"><label class="fg-label">레시피 이름 *</label><input class="fg-input" id="f-name" placeholder="예: 크림치즈 연어 베이글"></div>
+      <div class="fg"><label class="fg-label">한 줄 설명</label><input class="fg-input" id="f-desc" placeholder="예: 훈제 연어와 크림치즈의 클래식한 조합"></div>
+      <div class="fg"><label class="fg-label">추천사 *</label><input class="fg-input" id="f-tagline" placeholder="예: 브런치 분위기를 내고 싶을 때 추천!"></div>
+      <div class="fg"><label class="fg-label">빵 *</label><div class="fg-chips" id="fb-bread"></div><div class="fg-add"><input class="fg-add-input" id="fi-bread" placeholder="직접 입력"><button class="fg-add-btn" onclick="addFC('bread')">추가</button></div></div>
+      <div class="fg"><label class="fg-label">치즈</label><div class="fg-chips" id="fb-cheese"></div><div class="fg-add"><input class="fg-add-input" id="fi-cheese" placeholder="직접 입력"><button class="fg-add-btn" onclick="addFC('cheese')">추가</button></div></div>
+      <div class="fg"><label class="fg-label">채소</label><div class="fg-chips" id="fb-veggie"></div><div class="fg-add"><input class="fg-add-input" id="fi-veggie" placeholder="직접 입력"><button class="fg-add-btn" onclick="addFC('veggie')">추가</button></div></div>
+      <div class="fg"><label class="fg-label">소스</label><div class="fg-chips" id="fb-sauce"></div><div class="fg-add"><input class="fg-add-input" id="fi-sauce" placeholder="직접 입력"><button class="fg-add-btn" onclick="addFC('sauce')">추가</button></div></div>
+      <div class="fg"><label class="fg-label">고기 / 단백질</label><div class="fg-chips" id="fb-meat"></div><div class="fg-add"><input class="fg-add-input" id="fi-meat" placeholder="직접 입력"><button class="fg-add-btn" onclick="addFC('meat')">추가</button></div></div>
+      <div class="fg"><label class="fg-label">기타</label><div class="fg-chips" id="fb-etc"></div><div class="fg-add"><input class="fg-add-input" id="fi-etc" placeholder="직접 입력"><button class="fg-add-btn" onclick="addFC('etc')">추가</button></div></div>
+      <div class="fg">
+        <label class="fg-label">맛 키워드</label>
+        <div class="fg-chips">
+          <span class="fg-chip" data-v="고소한" onclick="toggleFT(this)">고소한</span>
+          <span class="fg-chip" data-v="상큼한" onclick="toggleFT(this)">상큼한</span>
+          <span class="fg-chip" data-v="매콤한" onclick="toggleFT(this)">매콤한</span>
+          <span class="fg-chip" data-v="담백한" onclick="toggleFT(this)">담백한</span>
+          <span class="fg-chip" data-v="든든한" onclick="toggleFT(this)">든든한</span>
+          <span class="fg-chip" data-v="가벼운" onclick="toggleFT(this)">가벼운</span>
+          <span class="fg-chip" data-v="달콤한" onclick="toggleFT(this)">달콤한</span>
+        </div>
+      </div>
+      <div class="fg"><label class="fg-label">만드는 방법 *</label><textarea class="fg-textarea" id="f-steps" placeholder="1. 빵을 토스트합니다&#10;2. 소스를 바릅니다&#10;3. ..."></textarea></div>
+      <div class="fg"><label class="fg-label">레시피 킥!</label><textarea class="fg-textarea" id="f-tip" style="min-height:60px" placeholder="맛있게 먹는 비법이 있다면!"></textarea></div>
+    </div>
+    <div class="sub-foot">
+      <button class="btn btn-ghost" onclick="closeSubBtn()">취소</button>
+      <button class="btn btn-dark" onclick="submitRecipe()">저장하기</button>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <button class="bb-btn" onclick="showAll()">전체 레시피</button>
+  <button class="bb-btn" onclick="openWishlist()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>나의 찜 목록
+  </button>
+  <button class="bb-btn red-btn" onclick="openSub()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>나의 꿀조합 제보하기
+  </button>
+  <button class="bb-btn" onclick="openShare()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>레시피 공유하기
+  </button>
+</div>
+
+<!-- 공유 팝업 -->
+<div class="share-overlay" id="shareOverlay" onclick="if(event.target===this)closeShareBtn()">
+  <div class="share-modal">
+    <div class="share-modal-head">
+      <div class="sm-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        레시피 공유하기
+      </div>
+      <div class="sm-sub">아래 URL을 복사해서 공유해보세요</div>
+      <button class="share-modal-close" onclick="closeShareBtn()">✕</button>
+    </div>
+    <div class="share-url-body">
+      <div class="share-url-box">
+        <span class="share-url-text" id="shareUrlText"></span>
+        <button class="share-copy-btn" id="shareCopyBtn" onclick="copyShareUrl()">복사</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 감사 팝업 -->
+<div class="thanks-overlay" id="thanksOverlay" onclick="closeThanks()">
+  <div class="thanks-card" onclick="event.stopPropagation()">
+    <div class="thanks-emoji">😊</div>
+    <div class="thanks-msg"><span>맛있어지는 레시피</span><br>공유 감사합니다!</div>
+    <button class="thanks-close" onclick="closeThanks()">확인</button>
+  </div>
+</div>
+
+<!-- 찜 목록 패널 -->
+<div class="wishlist-overlay" id="wishlistOverlay" onclick="if(event.target===this)closeWishlist()">
+  <div class="wishlist-panel">
+    <div class="wishlist-head">
+      <div class="wishlist-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--red)" stroke="var(--red)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        나의 찜 목록
+      </div>
+      <div class="wishlist-sub">하트를 누른 레시피가 여기 모여요</div>
+      <button class="wishlist-close" onclick="closeWishlist()">✕</button>
+    </div>
+    <div class="wishlist-body" id="wishlistBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── 1-COLOR SKETCH ILLUSTRATIONS ── */
+const ILLUSTS = {
+
+  /* 삼각 샌드위치 단면 — 레이어가 또렷하게 보이는 클래식 */
+  SANDWICH: `<svg viewBox="0 0 90 72" width="82" height="66" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#1C1C1C" stroke-linecap="round" stroke-linejoin="round">
+    <!-- triangle body -->
+    <path d="M8 64 L45 8 L82 64 Z" stroke-width="2.4"/>
+    <!-- bottom bread thick layer -->
+    <line x1="8" y1="64" x2="82" y2="64" stroke-width="1"/>
+    <path d="M8 64 Q45 70 82 64" stroke-width="2.2"/>
+    <!-- layer 1: lettuce wavy -->
+    <path d="M12 56 Q19 50 26 56 Q33 62 40 56 Q47 50 54 56 Q61 62 68 56 Q74 50 78 53" stroke-width="2"/>
+    <!-- layer 2: tomato solid band -->
+    <line x1="15" y1="48" x2="75" y2="48" stroke-width="3.5"/>
+    <!-- layer 3: cheese zigzag -->
+    <path d="M18 41 L24 38 L30 41 L36 38 L42 41 L48 38 L54 41 L60 38 L66 41 L72 38" stroke-width="1.8"/>
+    <!-- layer 4: patty/meat texture -->
+    <line x1="22" y1="33" x2="68" y2="33" stroke-width="3"/>
+    <path d="M24 30 Q35 27 46 30 Q57 33 66 30" stroke-width="1.4"/>
+    <!-- top bun dome -->
+    <path d="M22 25 Q45 8 68 25" stroke-width="2.2"/>
+    <!-- sesame seeds -->
+    <ellipse cx="38" cy="17" rx="3" ry="1.4" stroke-width="1.5" transform="rotate(-20 38 17)"/>
+    <ellipse cx="50" cy="13" rx="3" ry="1.4" stroke-width="1.5" transform="rotate(10 50 13)"/>
+    <ellipse cx="60" cy="19" rx="2.5" ry="1.2" stroke-width="1.5"/>
+  </svg>`,
+
+  /* 베이글 — 구멍 뚫린 형태 + 크림치즈가 흘러내리는 단면 */
+  BAGEL: `<svg viewBox="0 0 90 72" width="82" height="66" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#1C1C1C" stroke-linecap="round" stroke-linejoin="round">
+    <!-- bagel ring -->
+    <ellipse cx="45" cy="40" rx="32" ry="22" stroke-width="2.4"/>
+    <ellipse cx="45" cy="40" rx="14" ry="9" stroke-width="2"/>
+    <!-- top bun highlight curve -->
+    <path d="M16 36 Q24 22 45 20 Q66 22 74 36" stroke-width="2"/>
+    <!-- cream cheese spread top -->
+    <path d="M18 38 Q32 32 45 33 Q58 32 72 38" stroke-width="2.2" stroke-dasharray="4,2"/>
+    <!-- cream cheese drips -->
+    <path d="M30 33 Q29 28 31 24 Q32 20 30 17" stroke-width="1.8"/>
+    <path d="M45 32 Q44 26 46 22" stroke-width="1.8"/>
+    <path d="M60 33 Q61 27 59 23" stroke-width="1.8"/>
+    <!-- sesame seeds on top -->
+    <ellipse cx="32" cy="27" rx="3" ry="1.3" stroke-width="1.5" transform="rotate(-25 32 27)"/>
+    <ellipse cx="45" cy="23" rx="3" ry="1.3" stroke-width="1.5"/>
+    <ellipse cx="58" cy="27" rx="3" ry="1.3" stroke-width="1.5" transform="rotate(20 58 27)"/>
+    <!-- honey drip from top right -->
+    <path d="M68 20 Q72 14 70 8 Q69 4 73 6" stroke-width="1.8"/>
+    <path d="M74 22 Q78 16 76 11" stroke-width="1.6"/>
+  </svg>`,
+
+  /* 달걀프라이 — 팬 위에서 익는 모습 */
+  EGG: `<svg viewBox="0 0 90 72" width="82" height="66" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#1C1C1C" stroke-linecap="round" stroke-linejoin="round">
+    <!-- frying pan -->
+    <path d="M10 58 Q10 68 80 68 Q80 58 10 58Z" stroke-width="2.2"/>
+    <line x1="80" y1="63" x2="90" y2="55" stroke-width="2.4"/>
+    <line x1="87" y1="52" x2="92" y2="57" stroke-width="1.8"/>
+    <!-- egg white blob -->
+    <path d="M20 58 Q18 42 30 36 Q38 30 45 34 Q52 30 60 36 Q72 42 70 58Z" stroke-width="2.2"/>
+    <!-- egg white inner ripple -->
+    <path d="M25 55 Q24 45 34 40 Q40 36 45 38" stroke-width="1.3"/>
+    <!-- yolk circle -->
+    <circle cx="45" cy="46" r="11" stroke-width="2.2"/>
+    <!-- yolk shine -->
+    <circle cx="41" cy="42" r="3" stroke-width="1.4"/>
+    <!-- steam -->
+    <path d="M30 28 Q28 22 32 16 Q34 10 30 4" stroke-width="1.6"/>
+    <path d="M45 26 Q43 20 47 14" stroke-width="1.6"/>
+    <path d="M60 28 Q62 22 58 16 Q56 10 60 4" stroke-width="1.6"/>
+  </svg>`,
+
+  /* 미트볼 3개 + 포크로 찍는 장면 */
+  MEATBALL: `<svg viewBox="0 0 90 72" width="82" height="66" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#1C1C1C" stroke-linecap="round" stroke-linejoin="round">
+    <!-- plate / sauce pool -->
+    <ellipse cx="45" cy="62" rx="36" ry="8" stroke-width="2"/>
+    <!-- sauce drizzle -->
+    <path d="M16 60 Q30 54 45 58 Q60 54 74 60" stroke-width="1.4" stroke-dasharray="3,2"/>
+    <!-- left meatball -->
+    <circle cx="24" cy="48" r="15" stroke-width="2.2"/>
+    <path d="M14 42 Q18 36 28 38" stroke-width="1.4"/>
+    <path d="M16 50 Q20 54 26 52" stroke-width="1.2"/>
+    <!-- center meatball -->
+    <circle cx="45" cy="44" r="16" stroke-width="2.2"/>
+    <path d="M35 38 Q40 32 52 36" stroke-width="1.4"/>
+    <!-- right meatball -->
+    <circle cx="66" cy="48" r="15" stroke-width="2.2"/>
+    <path d="M58 42 Q62 36 72 40" stroke-width="1.4"/>
+    <!-- fork piercing center ball -->
+    <line x1="45" y1="10" x2="45" y2="42" stroke-width="2.2"/>
+    <line x1="40" y1="10" x2="40" y2="22" stroke-width="1.6"/>
+    <line x1="45" y1="10" x2="45" y2="22" stroke-width="1.6"/>
+    <line x1="50" y1="10" x2="50" y2="22" stroke-width="1.6"/>
+    <path d="M40 22 Q45 26 50 22" stroke-width="1.6"/>
+  </svg>`,
+
+  /* 참치캔 뚜껑 열리는 장면 */
+  TUNA: `<svg viewBox="0 0 90 72" width="82" height="66" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#1C1C1C" stroke-linecap="round" stroke-linejoin="round">
+    <!-- can body -->
+    <rect x="14" y="32" width="52" height="32" rx="4" stroke-width="2.2"/>
+    <ellipse cx="40" cy="32" rx="26" ry="7" stroke-width="2"/>
+    <!-- can label lines -->
+    <line x1="14" y1="46" x2="66" y2="46" stroke-width="1.2"/>
+    <line x1="14" y1="52" x2="66" y2="52" stroke-width="1"/>
+    <!-- tuna texture inside -->
+    <path d="M20 39 Q27 36 34 39 Q27 42 20 39Z" stroke-width="1.4"/>
+    <path d="M36 38 Q43 35 50 38 Q43 41 36 38Z" stroke-width="1.4"/>
+    <!-- pull-ring lid -->
+    <path d="M26 25 Q40 16 54 25" stroke-width="2.2"/>
+    <line x1="40" y1="25" x2="40" y2="16" stroke-width="1.8"/>
+    <!-- ring -->
+    <ellipse cx="56" cy="18" rx="7" ry="5" stroke-width="2"/>
+    <line x1="54" y1="22" x2="50" y2="26" stroke-width="1.8"/>
+    <!-- avocado half beside -->
+    <path d="M70 38 Q78 30 80 44 Q80 60 70 62 Q60 60 60 50 Q60 40 70 38Z" stroke-width="2"/>
+    <circle cx="70" cy="52" r="6" stroke-width="1.8"/>
+  </svg>`,
+
+  /* 토마토 + 모짜렐라 카프레제 단면 */
+  CAPRESE: `<svg viewBox="0 0 90 72" width="82" height="66" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#1C1C1C" stroke-linecap="round" stroke-linejoin="round">
+    <!-- tomato 1 slice -->
+    <circle cx="28" cy="40" r="20" stroke-width="2.2"/>
+    <!-- tomato inner segments -->
+    <line x1="28" y1="20" x2="28" y2="60" stroke-width="1.2"/>
+    <line x1="8" y1="40" x2="48" y2="40" stroke-width="1.2"/>
+    <path d="M14 26 L42 54" stroke-width="1"/>
+    <path d="M14 54 L42 26" stroke-width="1"/>
+    <!-- stem -->
+    <path d="M24 20 Q28 14 32 20" stroke-width="1.8"/>
+    <line x1="28" y1="14" x2="28" y2="8" stroke-width="1.8"/>
+    <!-- mozzarella slice -->
+    <ellipse cx="60" cy="44" rx="18" ry="16" stroke-width="2.2"/>
+    <!-- cheese texture -->
+    <path d="M46 40 Q54 36 60 38 Q66 36 72 40" stroke-width="1.3"/>
+    <path d="M48 48 Q56 44 62 46 Q68 44 72 47" stroke-width="1.1"/>
+    <!-- basil leaf overlap -->
+    <path d="M38 56 Q44 48 52 50 Q56 52 52 58 Q46 64 38 56Z" stroke-width="1.8"/>
+    <line x1="45" y1="49" x2="42" y2="62" stroke-width="1.2"/>
+    <!-- olive oil drizzle -->
+    <path d="M62 24 Q66 18 64 12 Q68 10 66 6" stroke-width="1.6"/>
+  </svg>`,
+
+  /* 불고기 — 숯불 그릴 위 고기 굽기 */
+  BULGOGI: `<svg viewBox="0 0 90 72" width="82" height="66" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#1C1C1C" stroke-linecap="round" stroke-linejoin="round">
+    <!-- grill grate -->
+    <rect x="8" y="52" width="74" height="14" rx="3" stroke-width="2"/>
+    <line x1="20" y1="52" x2="20" y2="66" stroke-width="1.4"/>
+    <line x1="34" y1="52" x2="34" y2="66" stroke-width="1.4"/>
+    <line x1="48" y1="52" x2="48" y2="66" stroke-width="1.4"/>
+    <line x1="62" y1="52" x2="62" y2="66" stroke-width="1.4"/>
+    <!-- meat piece 1 -->
+    <path d="M12 52 Q16 36 28 34 Q38 32 40 44 Q42 52 36 52Z" stroke-width="2.2"/>
+    <path d="M16 46 Q20 40 28 40" stroke-width="1.4"/>
+    <!-- meat piece 2 -->
+    <path d="M38 52 Q40 36 54 32 Q64 30 66 44 Q68 52 60 52Z" stroke-width="2.2"/>
+    <path d="M44 46 Q48 38 56 38" stroke-width="1.4"/>
+    <!-- grill marks on meat 2 -->
+    <line x1="46" y1="50" x2="52" y2="44" stroke-width="1.8"/>
+    <line x1="52" y1="50" x2="58" y2="44" stroke-width="1.8"/>
+    <!-- fire / flame under grill -->
+    <path d="M22 68 Q20 74 24 76 Q22 78 26 76 Q28 80 30 76 Q32 78 30 74 Q34 72 28 68Z" stroke-width="1.6"/>
+    <path d="M50 68 Q48 74 52 76 Q54 80 56 76 Q58 78 56 72 Q60 70 54 68Z" stroke-width="1.6"/>
+    <!-- steam/smoke -->
+    <path d="M24 32 Q22 26 26 20 Q24 14 28 8" stroke-width="1.5"/>
+    <path d="M52 30 Q54 24 50 18 Q52 12 50 6" stroke-width="1.5"/>
+  </svg>`,
+
+  /* 살라미 — 통살라미 + 얇게 썬 단면 */
+  SALAMI: `<svg viewBox="0 0 90 72" width="82" height="66" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#1C1C1C" stroke-linecap="round" stroke-linejoin="round">
+    <!-- salami log body -->
+    <path d="M14 56 Q12 20 24 12 Q38 4 52 12 Q64 20 62 56Z" stroke-width="2.2"/>
+    <!-- log top ellipse -->
+    <ellipse cx="38" cy="12" rx="24" ry="9" stroke-width="2"/>
+    <!-- log texture lines -->
+    <path d="M16 48 Q38 44 60 48" stroke-width="1.2"/>
+    <path d="M14 40 Q38 36 62 40" stroke-width="1"/>
+    <!-- sliced piece angled -->
+    <ellipse cx="72" cy="46" rx="13" ry="18" stroke-width="2.2" transform="rotate(20 72 46)"/>
+    <!-- fat dots on slice -->
+    <circle cx="68" cy="42" r="2.5" stroke-width="1.6"/>
+    <circle cx="76" cy="46" r="2" stroke-width="1.4"/>
+    <circle cx="70" cy="52" r="2.5" stroke-width="1.6"/>
+    <circle cx="78" cy="40" r="1.8" stroke-width="1.3"/>
+    <!-- knife cutting -->
+    <path d="M4 26 L22 52" stroke-width="2.4"/>
+    <path d="M4 26 L8 18 L16 22 Z" stroke-width="1.8"/>
+    <line x1="6" y1="30" x2="10" y2="26" stroke-width="1.2"/>
+  </svg>`,
+
+  /* 허브/바질 — 포카치아 위에 놓인 허브 */
+  HERB: `<svg viewBox="0 0 90 72" width="82" height="66" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#1C1C1C" stroke-linecap="round" stroke-linejoin="round">
+    <!-- bread slice base -->
+    <path d="M8 60 Q8 68 82 68 Q82 60 8 60Z" stroke-width="2"/>
+    <path d="M8 52 Q8 60 82 60" stroke-width="2"/>
+    <!-- bread holes (focaccia) -->
+    <circle cx="24" cy="56" r="3" stroke-width="1.6"/>
+    <circle cx="38" cy="54" r="3" stroke-width="1.6"/>
+    <circle cx="52" cy="56" r="3" stroke-width="1.6"/>
+    <circle cx="66" cy="54" r="3" stroke-width="1.6"/>
+    <!-- big basil leaf centre -->
+    <path d="M45 52 Q26 44 22 28 Q20 14 38 10 Q52 8 56 22 Q64 40 45 52Z" stroke-width="2.2"/>
+    <line x1="45" y1="52" x2="36" y2="10" stroke-width="1.6"/>
+    <path d="M36 20 Q28 24 24 32" stroke-width="1.3"/>
+    <path d="M36 30 Q28 34 24 42" stroke-width="1.3"/>
+    <path d="M38 18 Q46 22 50 28" stroke-width="1.3"/>
+    <path d="M40 30 Q48 34 52 40" stroke-width="1.3"/>
+    <!-- small leaf -->
+    <path d="M58 46 Q52 38 58 30 Q64 24 68 32 Q72 42 58 46Z" stroke-width="1.8"/>
+    <line x1="58" y1="46" x2="62" y2="30" stroke-width="1.3"/>
+    <!-- olive oil bottle -->
+    <path d="M72 10 L70 28 Q68 32 72 34 Q76 32 74 28 L72 10Z" stroke-width="1.8"/>
+    <rect x="70" y="6" width="4" height="5" rx="1" stroke-width="1.6"/>
+    <line x1="72" y1="4" x2="72" y2="2" stroke-width="1.6"/>
+  </svg>`,
+};
+
+const ILLUST_CYCLE = ['SANDWICH','BAGEL','EGG','MEATBALL','TUNA','CAPRESE','BULGOGI','SALAMI','HERB'];
+
+/* ── MOON'S COMMENT DATA ──
+   키(key): 재료 키워드 (부분 일치 허용)
+   text   : 노출될 추천 문구
+   link   : 구매 링크 (비워두면 자동으로 노출 제외됨)
+─────────────────────────────────────── */
+const recommendationData = {
+  "선드라이":     { text: "용량도 맛도 합리적!", link: "https://www.kurly.com/goods/5103362" },
+  "치아바타":     { text: "겉바속촉, 제가 늘 쟁여두는 치아바타", link: "" },
+  "바질":         { text: "향이 진한 유기농 바질 페스토", link: "" },
+  "크림치즈":     { text: "진하고 꾸덕한 필라델피아 크림치즈", link: "" },
+  "모르타델라":   { text: "정통 이탈리안 모르타델라 햄", link: "" },
+  "부라타":       { text: "신선하고 크리미한 부라타 치즈", link: "" },
+  "잠봉":         { text: "풍미 깊은 프랑스식 잠봉뵈르용 햄", link: "" },
+  "피스타치오":   { text: "고소한 피스타치오 스프레드", link: "" },
+  "파스트라미":   { text: "뉴욕 델리 스타일 파스트라미", link: "" },
+  "사워크라우트": { text: "발효 감칠맛 살아있는 사워크라우트", link: "" },
+  "베이컨":       { text: "두툼하고 짭조름한 수제 베이컨", link: "" },
+  "루꼴라":       { text: "쌉싸름함이 살아있는 신선 루꼴라", link: "" },
+};
+
+/* 매칭 재료가 없을 때 보여줄 공통 추천 (link 비워두면 섹션 전체 숨김) */
+const fallbackRecommendation = {
+  text: "Moon's Kitchen 재료 모아보기",
+  link: ""
+};
+
+/* 매칭 함수: 레시피 재료를 스캔해 최대 2개 추천 반환 */
+function getMatchedComments(recipe) {
+  const allIngredients = [
+    ...Object.values(recipe.cats || {}).flat(),
+    ...(recipe.sauce || [])
+  ].map(s => s.trim().toLowerCase());
+
+  const matched = [];
+  for (const [key, data] of Object.entries(recommendationData)) {
+    if (!data.link || !data.text) continue;          // 링크 없는 항목 제외
+    const kw = key.trim().toLowerCase();
+    if (allIngredients.some(ing => ing.includes(kw) || kw.includes(ing))) {
+      matched.push({ ...data, key });
+    }
+  }
+
+  // Fisher-Yates 셔플 → 최대 2개
+  for (let i = matched.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [matched[i], matched[j]] = [matched[j], matched[i]];
+  }
+  return matched.slice(0, 2);
+}
+
+/* ── DATA ── */
+const CATS = {
+  bread:  { label:'빵',  items:['식빵','바게트','치아바타','포카치아','호밀빵','베이글','크루아상','사워도우','소금빵'] },
+  cheese: { label:'치즈', items:['체다','모짜렐라','크림치즈','그뤼에르','페타','에멘탈','부라타','하바티'] },
+  veggie: { label:'채소', items:['양상추','토마토','양파','오이','아보카도','피망','시금치','적양배추','루꼴라','버섯','방울토마토'] },
+  sauce:  { label:'소스', items:['마요네즈','머스타드','페스토','발사믹','케첩','스리라차','올리브오일','갈릭소스','꿀','그릭요거트'] },
+  meat:   { label:'고기', items:['베이컨','햄','로스트비프','참치','연어','닭가슴살','살라미','미트볼','달걀','잠봉','파스트라미','모르타델라'] },
+  etc:    { label:'기타', items:['피클','할라피뇨','올리브','케이퍼','바질','선드라이드토마토','사워크라우트','피스타치오스프레드','블랙페퍼'] }
+};
+const TASTE_MAP = {
+  '고소한':['크림치즈','체다','그뤼에르','에멘탈','하바티','부라타','아보카도','마요네즈','달걀','연어','잠봉','피스타치오스프레드'],
+  '상큼한':['토마토','오이','루꼴라','발사믹','케이퍼','피클','아보카도','사워크라우트','그릭요거트'],
+  '매콤한':['스리라차','할라피뇨','피망','머스타드'],
+  '담백한':['양상추','시금치','닭가슴살','참치','올리브오일','호밀빵','사워도우'],
+  '든든한':['로스트비프','베이컨','햄','미트볼','체다','달걀','베이글','파스트라미','모르타델라'],
+  '가벼운':['루꼴라','오이','페스토','시금치','치아바타','연어','그릭요거트'],
+  '달콤한':['크루아상','발사믹','선드라이드토마토','페타','꿀','소금빵']
+};
+
+let recipes = [];
+
+/* ── STATE ── */
+let selCats={}, selTastes=[], curDetailId=null;
+let fSel={bread:[],cheese:[],veggie:[],sauce:[],meat:[],etc:[],tastes:[]};
+let fData={};
+let illustIdx=0;
+
+/* ── INIT ── */
+async function init(){
+  loadLikes();
+  renderCatGrid();
+  try {
+    recipes = await fetch('recipes.json').then(r => r.json());
+  } catch(e) {
+    console.error('recipes.json 로드 실패:', e);
+    return;
+  }
+  renderAll(recipes);
+  renderTop3();
+  const p=new URLSearchParams(location.search);
+  const rid=p.get('recipe');
+  if(rid){ const r=recipes.find(x=>x.id==rid); if(r) openDetail(r.id); }
+}
+
+/* ── CAT GRID ── */
+function renderCatGrid(){
+  document.getElementById('catGrid').innerHTML=Object.entries(CATS).map(([k,c])=>`
+    <div class="cat-block">
+      <div class="cat-label">${c.label}</div>
+      <div class="cat-chips">${c.items.map(item=>`
+        <span class="cat-chip${(selCats[k]||[]).includes(item)?' on':''}" data-cat="${k}" data-item="${item}" onclick="toggleCat(this)">${item}</span>
+      `).join('')}</div>
+    </div>
+  `).join('');
+}
+
+function toggleCat(el){
+  const k=el.dataset.cat,item=el.dataset.item;
+  if(!selCats[k]) selCats[k]=[];
+  if(selCats[k].includes(item)){selCats[k]=selCats[k].filter(x=>x!==item);el.classList.remove('on');}
+  else{selCats[k].push(item);el.classList.add('on');}
+  update();
+}
+function toggleTaste(el){
+  const t=el.dataset.t;
+  if(selTastes.includes(t)){selTastes=selTastes.filter(x=>x!==t);el.classList.remove('on');}
+  else{selTastes.push(t);el.classList.add('on');}
+  update();
+}
+
+/* ── SCORING ── */
+function scoreRecipe(r){
+  let s=0;
+  Object.entries(selCats).forEach(([k,items])=>items.forEach(item=>{ if((r.cats[k]||[]).includes(item)) s+=3; }));
+  selTastes.forEach(t=>{
+    (TASTE_MAP[t]||[]).forEach(ri=>{ if(Object.values(r.cats).flat().includes(ri)) s+=1; });
+    if((r.tastes||[]).includes(t)) s+=4;
+  });
+  return s;
+}
+
+function update(){
+  const allSel=Object.values(selCats).flat();
+  const hasFilter=allSel.length>0||selTastes.length>0;
+  if(!hasFilter){
+    document.getElementById('recStrip').classList.remove('visible');
+    renderAll(recipes);
+    document.getElementById('secTitle').textContent='전체 레시피';
+    document.getElementById('secCount').textContent='';
+    return;
+  }
+  const scored=recipes.map(r=>({...r,score:scoreRecipe(r)})).filter(r=>r.score>0).sort((a,b)=>b.score-a.score);
+  const labels=[...allSel.slice(0,3),...selTastes.slice(0,2)];
+  document.getElementById('recLabel').textContent=labels.length?`"${labels.join(' · ')}" — 추천 레시피`:'추천 레시피';
+
+  const rp=document.getElementById('recPosters');
+  if(!scored.length){
+    rp.innerHTML='<div class="no-result">맞는 레시피가 없어요. 추천하기로 등록해주세요!</div>';
+  } else {
+    rp.innerHTML=scored.slice(0,3).map(r=>`
+      <div class="note-card" onclick="openDetail(${r.id})">
+        <div class="nc-inner">
+          <div class="nc-bread">${r.bread}</div>
+          <div class="nc-name">${r.name}</div>
+          <div class="nc-tagline">${r.tagline||'이 조합에 추천!'}</div>
+        </div>
+        ${likeBtn(r.id)}
+      </div>
+    `).join('');
+  }
+  document.getElementById('recStrip').classList.add('visible');
+  renderAll(scored.length?scored:recipes);
+  document.getElementById('secTitle').textContent=scored.length?'맞는 레시피':'전체 레시피';
+  document.getElementById('secCount').textContent=scored.length?`${scored.length}개`:'';
+}
+
+/* ── RENDER ALL ── */
+function renderAll(list){
+  const g=document.getElementById('allGrid');
+  if(!list.length){g.innerHTML='<div class="no-result">해당 레시피가 없어요</div>';return;}
+  g.innerHTML=list.map(r=>`
+    <div class="note-card" onclick="openDetail(${r.id})">
+      <div class="nc-inner">
+        <div class="nc-bread">${r.bread}</div>
+        <div class="nc-name">${r.name}</div>
+        <div class="nc-tagline">${r.tagline||''}</div>
+        <div class="nc-desc">${r.desc}</div>
+        <div class="nc-tags">
+          ${r.sauce.slice(0,2).map(s=>`<span class="nc-tag r">${s}</span>`).join('')}
+          ${Object.values(r.cats).flat().filter(Boolean).slice(0,3).map(i=>`<span class="nc-tag">${i}</span>`).join('')}
+        </div>
+      </div>
+      ${likeBtn(r.id)}
+    </div>
+  `).join('');
+}
+
+function showAll(){
+  selCats={};selTastes=[];
+  document.querySelectorAll('.cat-chip.on,.taste-chip.on').forEach(el=>el.classList.remove('on'));
+  document.getElementById('recStrip').classList.remove('visible');
+  renderAll(recipes);
+  document.getElementById('secTitle').textContent='전체 레시피';
+  document.getElementById('secCount').textContent='';
+  renderCatGrid();
+}
+
+/* ── DETAIL ── */
+function openDetail(id){
+  const r=recipes.find(x=>x.id===id);if(!r)return;
+  curDetailId=id;
+  document.getElementById('dBread').textContent=r.bread;
+  document.getElementById('dName').textContent=r.name;
+  document.getElementById('dDesc').textContent=r.desc;
+  document.getElementById('dIng').innerHTML=Object.values(r.cats).flat().filter(Boolean).map(i=>`<li>${i}</li>`).join('');
+  document.getElementById('dSteps').innerHTML=r.steps.map(s=>`<li>${s}</li>`).join('');
+  const tw=document.getElementById('dTipWrap');
+  if(r.tip){document.getElementById('dTip').textContent=r.tip;tw.style.display='block';}
+  else tw.style.display='none';
+  document.getElementById('shareBox').classList.remove('show');
+
+  // Moon's Comment 렌더링
+  const mcBox   = document.getElementById('moonCommentBox');
+  const mcItems = document.getElementById('mcItems');
+  const comments = getMatchedComments(r);
+
+  const cartIcon = `<span class="mc-arrow"><span class="icon-cart"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></span><span class="icon-label">사러가기</span></span>`;
+
+  if (comments.length) {
+    mcItems.innerHTML = comments.map(c => `
+      <a class="mc-item" href="${c.link}" target="_blank" rel="noopener noreferrer">
+        <span class="mc-text"><strong>${c.key}</strong> : ${c.text}</span>
+        ${cartIcon}
+      </a>`).join('');
+    mcBox.style.display = 'block';
+  } else if (fallbackRecommendation.link) {
+    mcItems.innerHTML = `
+      <a class="mc-item" href="${fallbackRecommendation.link}" target="_blank" rel="noopener noreferrer">
+        <span class="mc-text">${fallbackRecommendation.text}</span>
+        ${cartIcon}
+      </a>`;
+    mcBox.style.display = 'block';
+  } else {
+    mcBox.style.display = 'none';   // 링크 없으면 섹션 완전히 숨김
+  }
+
+  document.getElementById('dOverlay').classList.add('open');
+}
+function closeDOverlay(e){if(e.target===document.getElementById('dOverlay'))document.getElementById('dOverlay').classList.remove('open');}
+function closeDBtn(){document.getElementById('dOverlay').classList.remove('open');}
+function shareRecipe(){
+  if(!curDetailId)return;
+  const url=`${location.href.split('?')[0]}?recipe=${curDetailId}`;
+  navigator.clipboard.writeText(url).catch(()=>{});
+  const sb=document.getElementById('shareBox');sb.textContent=url;sb.classList.add('show');
+  showToast('링크가 복사되었습니다!');
+}
+
+/* ── SUBMIT ── */
+function openSub(){
+  fSel={bread:[],cheese:[],veggie:[],sauce:[],meat:[],etc:[],tastes:[]};
+  fData=JSON.parse(JSON.stringify(Object.fromEntries(Object.entries(CATS).map(([k,v])=>[k,[...v.items]]))));
+  ['f-name','f-desc','f-steps','f-tip','f-tagline'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.querySelectorAll('.fg-chip[data-v]').forEach(el=>el.classList.remove('on'));
+  Object.keys(CATS).forEach(cat=>renderFB(cat));
+  document.getElementById('subOverlay').classList.add('open');
+}
+function closeSubBtn(){document.getElementById('subOverlay').classList.remove('open');}
+function closeSubOverlay(e){if(e.target===document.getElementById('subOverlay'))closeSubBtn();}
+
+function renderFB(cat){
+  const c=document.getElementById(`fb-${cat}`);if(!c)return;
+  c.innerHTML=(fData[cat]||[]).map(item=>`
+    <span class="fg-chip${(fSel[cat]||[]).includes(item)?' on':''}" onclick="toggleFC(this,'${cat}','${item}')">${item}</span>
+  `).join('');
+}
+function toggleFC(el,cat,item){
+  if(!fSel[cat])fSel[cat]=[];
+  if(fSel[cat].includes(item)){fSel[cat]=fSel[cat].filter(x=>x!==item);el.classList.remove('on');}
+  else{fSel[cat].push(item);el.classList.add('on');}
+}
+function addFC(cat){
+  const inp=document.getElementById(`fi-${cat}`);const v=inp.value.trim();if(!v)return;
+  if(!fData[cat])fData[cat]=[];
+  if(!fData[cat].includes(v)){fData[cat].push(v);if(!fSel[cat])fSel[cat]=[];fSel[cat].push(v);renderFB(cat);}
+  inp.value='';
+}
+function toggleFT(el){
+  const v=el.dataset.v;
+  if(fSel.tastes.includes(v)){fSel.tastes=fSel.tastes.filter(x=>x!==v);el.classList.remove('on');}
+  else{fSel.tastes.push(v);el.classList.add('on');}
+}
+function submitRecipe(){
+  const name=document.getElementById('f-name').value.trim();
+  const steps=document.getElementById('f-steps').value.trim();
+  if(!name){showToast('레시피 이름을 입력해주세요');return;}
+  if(!fSel.bread.length){showToast('빵 종류를 선택해주세요');return;}
+  if(!steps){showToast('만드는 방법을 입력해주세요');return;}
+  illustIdx=(illustIdx+1)%ILLUST_CYCLE.length;
+  const newId=Math.max(...recipes.map(r=>r.id),0)+1;
+  const newR={
+    id:newId,name,bread:fSel.bread[0],
+    desc:document.getElementById('f-desc').value.trim()||'새로 추천된 레시피',
+    tagline:document.getElementById('f-tagline').value.trim()||'이 조합에 추천!',
+    illustKey:ILLUST_CYCLE[illustIdx],
+    cats:{bread:[...(fSel.bread||[])],cheese:[...(fSel.cheese||[])],veggie:[...(fSel.veggie||[])],sauce:[...(fSel.sauce||[])],meat:[...(fSel.meat||[])],etc:[...(fSel.etc||[])]},
+    tastes:[...fSel.tastes],
+    sauce:[...(fSel.sauce||[])],
+    steps:steps.split('\n').map(s=>s.replace(/^\d+[\.\)]\s*/,'')).filter(Boolean),
+    tip:document.getElementById('f-tip').value.trim()
+  };
+  recipes.push(newR);
+  Object.entries(CATS).forEach(([cat])=>(fSel[cat]||[]).forEach(item=>{if(!CATS[cat].items.includes(item))CATS[cat].items.push(item);}));
+  renderCatGrid();renderAll(recipes);
+  closeSubBtn();
+  showToast(`"${name}" 레시피가 등록되었습니다!`);
+}
+
+/* ── LIKES (LocalStorage) ── */
+let likes = {};
+let likedSet = new Set();
+
+function loadLikes(){
+  try {
+    likes = JSON.parse(localStorage.getItem('mss_likes') || '{}');
+    likedSet = new Set(JSON.parse(localStorage.getItem('mss_liked') || '[]'));
+  } catch(e){ likes={}; likedSet=new Set(); }
+}
+function saveLikes(){
+  localStorage.setItem('mss_likes', JSON.stringify(likes));
+  localStorage.setItem('mss_liked', JSON.stringify([...likedSet]));
+}
+function getLikeCount(id){ return likes[id] || 0; }
+function isLiked(id){ return likedSet.has(String(id)); }
+
+function likeBtn(id){
+  const liked = isLiked(id);
+  const count = getLikeCount(id);
+  const fill = liked ? 'var(--red)' : 'none';
+  return `<button class="nc-like${liked?' liked':''}" data-id="${id}" onclick="toggleLike(event,${id})" aria-label="좋아요">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="${fill}" stroke="var(--red)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <span class="nc-like-count">${count}</span>
+  </button>`;
+}
+
+function toggleLike(e, id){
+  e.stopPropagation();
+  const sid = String(id);
+  const wasLiked = isLiked(sid);
+  if(wasLiked){
+    likedSet.delete(sid);
+    likes[sid] = Math.max(0, (likes[sid]||0) - 1);
+  } else {
+    likedSet.add(sid);
+    likes[sid] = (likes[sid]||0) + 1;
+  }
+  saveLikes();
+  // Update all matching like buttons on page
+  document.querySelectorAll(`.nc-like[data-id="${id}"]`).forEach(btn=>{
+    const nowLiked = !wasLiked;
+    btn.classList.toggle('liked', nowLiked);
+    btn.querySelector('svg').setAttribute('fill', nowLiked ? 'var(--red)' : 'none');
+    btn.querySelector('.nc-like-count').textContent = getLikeCount(sid);
+    btn.classList.add('pop');
+    setTimeout(()=>btn.classList.remove('pop'), 320);
+  });
+  renderTop3();
+  if(document.getElementById('wishlistOverlay').classList.contains('open')) renderWishlist();
+}
+
+/* ── TOP 3 ── */
+function renderTop3(){
+  const grid = document.getElementById('top3Grid');
+  if(!grid) return;
+  const sorted = [...recipes].sort((a,b)=>getLikeCount(String(b.id))-getLikeCount(String(a.id)));
+  const top = sorted.filter(r=>getLikeCount(String(r.id))>0).slice(0,3);
+  if(!top.length){
+    grid.innerHTML='<div class="top3-empty">아직 좋아요가 없어요. 마음에 드는 레시피에 하트를 눌러보세요 ♡</div>';
+    return;
+  }
+  const rankCls = ['gold','silver','bronze'];
+  const rankLbl = ['1st','2nd','3rd'];
+  grid.innerHTML = top.map((r,i)=>`
+    <div class="top3-card" onclick="openDetail(${r.id})">
+      <div class="top3-rank ${rankCls[i]}">${rankLbl[i]}</div>
+      <div class="top3-bread">${r.bread}</div>
+      <div class="top3-name">${r.name}</div>
+      <div class="top3-likes">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="var(--red)" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        ${getLikeCount(String(r.id))}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ── WISHLIST ── */
+function openWishlist(){
+  renderWishlist();
+  document.getElementById('wishlistOverlay').classList.add('open');
+}
+function closeWishlist(){
+  document.getElementById('wishlistOverlay').classList.remove('open');
+}
+function renderWishlist(){
+  const body = document.getElementById('wishlistBody');
+  const liked = recipes.filter(r=>isLiked(String(r.id)));
+  if(!liked.length){
+    body.innerHTML='<div class="wishlist-empty">아직 찜한 레시피가 없어요.<br>카드 아래 하트를 눌러 저장해보세요 ♡</div>';
+    return;
+  }
+  body.innerHTML = liked.map(r=>`
+    <div class="wishlist-item" onclick="closeWishlist();openDetail(${r.id})">
+      <div class="wishlist-item-name">${r.name}</div>
+      <div class="wishlist-item-bread">${r.bread}</div>
+    </div>
+  `).join('');
+}
+
+/* ── SHARE ── */
+function openShare(){
+  const url = window.location.href;
+  document.getElementById('shareUrlText').textContent = url;
+  const btn = document.getElementById('shareCopyBtn');
+  btn.textContent = '복사'; btn.classList.remove('copied');
+  document.getElementById('shareOverlay').classList.add('open');
+}
+function closeShareBtn(){ document.getElementById('shareOverlay').classList.remove('open'); }
+function copyShareUrl(){
+  const url = document.getElementById('shareUrlText').textContent;
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn = document.getElementById('shareCopyBtn');
+    btn.textContent = '복사됨!'; btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='복사'; btn.classList.remove('copied'); }, 2000);
+  }).catch(()=>{ showToast('복사에 실패했습니다'); });
+}
+
+function showThanks(){
+  document.getElementById('thanksOverlay').classList.add('open');
+}
+function closeThanks(){
+  document.getElementById('thanksOverlay').classList.remove('open');
+}
+
+/* ── TOAST ── */
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+init();
+</script>
+
+<!-- 크레파스 wobble 필터: 테두리를 손으로 그린 듯 삐뚤빼뚤하게 -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="crayon-wobble" x="-8%" y="-8%" width="116%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.032 0.018" numOctaves="3" seed="7" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+</body>
+</html>

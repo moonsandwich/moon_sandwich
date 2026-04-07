@@ -638,13 +638,24 @@ body::before {
 /* ── TOAST ── */
 .toast {
   position: fixed; bottom: 5.2rem; left: 50%;
-  transform: translateX(-50%) translateY(50px);
+  transform: translateX(-50%) translateY(14px);
+  opacity: 0;
+  pointer-events: none;
   background: var(--ink); color: white;
-  padding: 0.55rem 1.3rem; border-radius: 1px;
-  font-size: 0.88rem; font-family: var(--hand);
-  z-index: 500; transition: transform 0.22s; white-space: nowrap;
+  padding: 0.55rem 1.3rem; border-radius: 2px;
+  font-size: 0.9rem; font-family: var(--hand);
+  z-index: 600;
+  white-space: nowrap;
+  transition: transform 0.24s ease, opacity 0.24s ease;
 }
-.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.toast.hide {
+  transform: translateX(-50%) translateY(-6px);
+  opacity: 0;
+}
 
 /* ── SHARE POPUP ── */
 .share-overlay {
@@ -1750,9 +1761,17 @@ function closeThanks(){
 }
 
 /* ── TOAST ── */
+let _toastTimer = null;
 function showToast(msg){
-  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2200);
+  if(_toastTimer) clearTimeout(_toastTimer);
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.remove('hide');
+  t.classList.add('show');
+  _toastTimer = setTimeout(()=>{
+    t.classList.add('hide');
+    setTimeout(()=>{ t.classList.remove('show','hide'); }, 280);
+  }, 1000);
 }
 
 init();

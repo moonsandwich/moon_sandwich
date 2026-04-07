@@ -34,7 +34,8 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
 }
 
-.page { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 0 1.2rem 6rem; }
+.page { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 0 1.2rem 7rem; }
+@media(max-width: 560px){ .page { padding-bottom: 9.5rem; } }
 
 /* ── RULED LINES (notebook background) ── */
 .ruled {
@@ -577,30 +578,66 @@ body::before {
 }
 
 /* ── BOTTOM BAR ── */
+:root {
+  --bb-fs: clamp(0.9rem, 2.4vw, 1.21rem);
+  --bb-h: 2.6rem;
+}
 .bottom-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: var(--ink); padding: 0.6rem 1rem;
-  display: flex; justify-content: center; align-items: center;
-  gap: 0.5rem; z-index: 100; flex-wrap: nowrap;
+  background: var(--ink);
+  padding: 0.6rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  z-index: 100;
+  flex-wrap: nowrap;
 }
 .bb-btn {
-  padding: 0.4rem 0.85rem;
-  border: 1.5px solid rgba(255,255,255,0.35); border-radius: 1px;
-  background: transparent; color: rgba(255,255,255,0.75);
-  font-family: var(--hand); font-size: 1.23rem; font-weight: 700;
-  cursor: pointer; transition: all 0.12s; white-space: nowrap;
-  display: flex; align-items: center;
+  flex: 0 0 auto;
+  width: auto;
+  height: var(--bb-h);
+  padding: 0 clamp(0.8rem, 2vw, 1.4rem);
+  border: 1.5px solid rgba(255,255,255,0.4);
+  border-radius: 2px;
+  background: transparent;
+  color: white;
+  font-family: var(--hand);
+  font-size: var(--bb-fs);
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s, opacity 0.12s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  opacity: 0.78;
 }
-.bb-btn:hover { border-color: white; color: white; }
-.bb-btn.red-btn { background: var(--red); color: white; border-color: var(--red); }
+.bb-btn:hover { border-color: white; opacity: 1; }
+.bb-btn.red-btn { background: var(--red); border-color: var(--red); opacity: 1; }
 .bb-btn.red-btn:hover { background: #a0302a; border-color: #a0302a; }
-@media(max-width: 520px){
-  .bb-btn { padding: 0.35rem 0.65rem; font-size: 1rem; }
+
+/* 모바일: 2×2 그리드 전환 */
+@media(max-width: 560px){
+  .bottom-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    padding: 0.5rem 0.7rem 0.55rem;
+  }
+  .bb-btn {
+    width: 100%;
+    height: var(--bb-h);
+    font-size: clamp(0.85rem, 3.5vw, 1rem);
+    padding: 0 0.5rem;
+  }
 }
 
 /* ── TOAST ── */
 .toast {
-  position: fixed; bottom: 4.5rem; left: 50%;
+  position: fixed; bottom: 5.2rem; left: 50%;
   transform: translateX(-50%) translateY(50px);
   background: var(--ink); color: white;
   padding: 0.55rem 1.3rem; border-radius: 1px;
@@ -1009,7 +1046,7 @@ body::before {
 <div class="bottom-bar">
   <button class="bb-btn" onclick="showAll()">전체 레시피</button>
   <button class="bb-btn" onclick="openWishlist()">나의 찜 목록</button>
-  <button class="bb-btn" onclick="openSub()">🍯 꿀조합 제보</button>
+  <button class="bb-btn" onclick="openSub()">꿀조합 제보</button>
   <button class="bb-btn red-btn" onclick="openShare()">문레시피링크공유</button>
 </div>
 
